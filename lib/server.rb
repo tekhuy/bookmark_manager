@@ -1,4 +1,5 @@
 require 'data_mapper'
+require 'sinatra'
 
 env = ENV['RACK_ENV'] || 'development'
 
