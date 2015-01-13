@@ -17,8 +17,8 @@ feature "User adds a new link" do
     add_link("http://www.makersacademy.com/", "Makers Academy",
       ['education','ruby'])
     link = Link.first
-    expect(link.tags).to include("education")
-    expect(link.tags).to include("ruby")
+    expect(link.tags.map(&:text)).to include("education")
+    expect(link.tags.map(&:text)).to include("ruby")
   end
 
   def add_link(url, title, tags = [])
