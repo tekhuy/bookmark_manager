@@ -21,6 +21,19 @@ feature "User adds a new link" do
     expect(link.tags.map(&:text)).to include("ruby")
   end
 
+  scenario "filtered by a tag" do
+    Link.create(url: "http://www.makersacademy.com", title: "Makers Academy", tags: [Tag.first_or_create(text: 'education')])
+    Link.create(url: "http://www.google.com", title: "Google", tags: [Tag.first_or_create(text: 'search')])
+    Link.create(url: "http://www.bing.com", title: "Bing", tags: [Tag.first_or_create(text: 'search')])
+    Link.create(url: "http://www.code.org", title: "Code.org", tags: [Tag.first_or_create(text: 'education')])
+    visit '/tags/search'
+    expect(page).not_to have_content("Makers Academy")
+    expect(page).not_to have_content("Code.org")
+    expect(page).to have_content("Google")
+    expect(page).to have_content("Bing")
+  end
+ 
+
   def add_link(url, title, tags = [])
     within('#new-link') do
       fill_in 'url', with: url
