@@ -1,3 +1,4 @@
+require 'sinatra'
 require 'data_mapper'
 require 'sinatra'
 
@@ -10,3 +11,8 @@ require './lib/link'
 DataMapper.finalize
 
 DataMapper.auto_upgrade!
+
+  get '/' do
+    @links = Link.all
+    erb :index
+  end
