@@ -1,4 +1,4 @@
-class Lik
+class Link
 
   include DataMapper::Resource
 
