@@ -44,6 +44,28 @@ class BookmarkManager < Sinatra::Base
     erb :"users/new"
   end
 
+  get '/users/forgot_password' do
+    erb :"users/forgot_password"
+  end
+
+  post '/users/reset_password' do
+    email = params[:email]
+    puts email
+    user = User.first(email: email)
+    user.password_token = (1..64).map{('A'..'Z').to_a.sample}.join
+    user.password_token_timestamp = Time.now
+    user.save
+    #take the token and put it in an email to the user
+  end
+
+  get '/users/reset_password/:token' do
+    token = params[:token]
+    user = User.first(:password_token => token)
+    # needs more stuff
+    # validate Timestamp in acceptable range
+    # take them to a page to enter a new password
+  end
+
   post '/users' do
     @user = User.create(email: params[:email],
       password: params[:password],
