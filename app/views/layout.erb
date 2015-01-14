@@ -2,6 +2,10 @@
 <html>
   <body>
 
+    <% if flash[:notice] %>
+      <section id="notice"><%= flash[:notice] %></section>
+    <% end %>
+
     <% if current_user %>
     Welcome, <%= current_user.email %>
     <% end %>
