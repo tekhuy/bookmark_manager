@@ -11,10 +11,16 @@ class BookmarkManager < Sinatra::Base
   enable :sessions
   use Rack::Flash
   set :session_secret, 'super secret'
+  use Rack::MethodOverride
 
   get '/' do
     @links = Link.all
     erb :index
+  end
+
+  delete '/sessions' do
+    session.clear
+    flash[:notice] = "Good bye!"
   end
 
   post '/links' do

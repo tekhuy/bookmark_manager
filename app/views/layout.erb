@@ -1,21 +1,32 @@
 <!DOCTYPE html>
 <html>
+
+  <header>
+    <% if current_user %>
+      Welcome, <%= current_user.email %>
+      <form action="/sessions" method="post">
+        <input type="hidden" name="_method" value="delete">
+        <input type="submit" value="Sign out">
+      </form>
+    <% end %>
+  </header>
+
   <body>
   
     <% if flash[:errors] && !flash[:errors].empty? %>
-    Sorry, there were the following problems with the form.
-    <ul id="errors">
-      <% flash[:errors].each do |error| %>
-        <li><%= error %></li>
-        <% end %>     
-    </ul>
-    
+      Sorry, there were the following problems with the form.
+      <ul id="errors">
+        <% flash[:errors].each do |error| %>
+          <li><%= error %></li>
+          <% end %>     
+      </ul>
     <% end %>
-  
-    <% if current_user %>
-    Welcome, <%= current_user.email %>
+
+    <% if flash[:notice] %>
+      <section id="notice">
+        <%= flash[:notice] %>
+      </section>
     <% end %>
-    
     <%= yield %>
   
   </body>
