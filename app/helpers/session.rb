@@ -24,4 +24,13 @@ module SessionHelpers
     click_button "Reset password"
   end
 
+  def fill_in_new_password_fields(email = 'alice@example.com', 
+              new_password = 'banana',
+              new_password_confirmation = 'banana')  
+    fill_in :email, with: email
+    fill_in :new_password, with: new_password
+    fill_in :new_password_confirmation, with: new_password_confirmation
+    click_button "Reset password"
+  end 
+
 end

@@ -1,3 +1,4 @@
+require 'timecop'
 require_relative '../../app/helpers/session'
 
 include SessionHelpers
@@ -14,11 +15,17 @@ feature 'User should be able to reset their password if they have forgotten it' 
     token = User.first.password_token
     reset_url = "/users/reset_password/#{token}"
     visit reset_url
-    fill_in :email, with: 'alice@example.com' 
-    fill_in :new_password, with: 'banana'
-    fill_in :new_password_confirmation, with: 'banana'
-    click_button "Reset password"
+    fill_in_new_password_fields
     expect(page).to have_content("Your password has been successfully changed")
+  end
+
+  scenario 'user atempts to use token more than an hour since it was created' do
+    reset_password
+    Timecop.travel((60*60)+1) # advance time by 1 hour and 1 second
+    token = User.first.password_token
+    reset_url = "/users/reset_password/#{token}"
+    visit reset_url
+    expect(page).to have_content("Sorry that token has expired, please request a new one")
   end
 
 end

@@ -60,12 +60,12 @@ class BookmarkManager < Sinatra::Base
   get '/users/reset_password/:token' do
     token = params[:token]
     user = User.first(:password_token => token)
-    # puts user.password_token_timestamp
-    # puts Time.now - (60*60)
     if (Time.now - (60 * 60)) > user.password_token_timestamp
-      erb :"users/forgot_password" #create flash message to say token was out of time      
-    end
+      flash.now[:errors] = ["Sorry that token has expired, please request a new one"]
+      erb :"users/forgot_password"   
+    else
       erb :"users/reset_password"
+    end
   end
 
   post '/users/reset_password' do
@@ -75,7 +75,6 @@ class BookmarkManager < Sinatra::Base
       password_confirmation: params[:new_password_confirmation])
       session[:user_id] = @user.id
       flash[:notice] = "Your password has been successfully changed"
-      # create a flash message to say successful
       redirect to('/')
     else
       flash.now[:errors] = @user.errors.full_messages
