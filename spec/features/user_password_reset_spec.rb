@@ -12,7 +12,8 @@ feature 'User should be able to reset their password if they have forgotten it' 
   scenario 'password token directs user to successfully change password' do
     reset_password
     token = User.first.password_token
-    visit "/users/reset_password/#{token}"
+    reset_url = "/users/reset_password/#{token}"
+    visit reset_url
     fill_in :email, with: 'alice@example.com' 
     fill_in :new_password, with: 'banana'
     fill_in :new_password_confirmation, with: 'banana'

@@ -48,7 +48,7 @@ class BookmarkManager < Sinatra::Base
     erb :"users/forgot_password"
   end
 
-  post '/users/reset_password' do
+  post '/users/forgot_password' do
     email = params[:email]
     puts email
     user = User.first(email: email)
@@ -59,11 +59,19 @@ class BookmarkManager < Sinatra::Base
   end
 
   get '/users/reset_password/:token' do
+    p params[:token]
     token = params[:token]
     user = User.first(:password_token => token)
     # needs more stuff
     # validate Timestamp in acceptable range
     # take them to a page to enter a new password
+    erb :"users/reset_password"
+  end
+
+  post '/users/reset_password' do
+    # validate email address and timestamp of token
+    # save password (if password == password_confirmation)
+    # create a flash message to say successful
   end
 
   post '/users' do
