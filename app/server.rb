@@ -69,6 +69,7 @@ class BookmarkManager < Sinatra::Base
   end
 
   post '/users/reset_password' do
+    #need to validate email wth token
     @user = User.first(email: params[:email])
     if @user.update(password: params[:new_password],
       password_confirmation: params[:new_password_confirmation])
