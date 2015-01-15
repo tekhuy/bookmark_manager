@@ -50,7 +50,6 @@ class BookmarkManager < Sinatra::Base
 
   post '/users/forgot_password' do
     email = params[:email]
-    puts email
     user = User.first(email: email)
     user.password_token = (1..64).map{('A'..'Z').to_a.sample}.join
     user.password_token_timestamp = Time.now
@@ -59,19 +58,28 @@ class BookmarkManager < Sinatra::Base
   end
 
   get '/users/reset_password/:token' do
-    p params[:token]
     token = params[:token]
     user = User.first(:password_token => token)
-    # needs more stuff
-    # validate Timestamp in acceptable range
-    # take them to a page to enter a new password
-    erb :"users/reset_password"
+    # puts user.password_token_timestamp
+    # puts Time.now - (60*60)
+    if (Time.now - (60 * 60)) > user.password_token_timestamp
+      erb :"users/forgot_password" #create flash message to say token was out of time      
+    end
+      erb :"users/reset_password"
   end
 
   post '/users/reset_password' do
-    # validate email address and timestamp of token
-    # save password (if password == password_confirmation)
-    # create a flash message to say successful
+    @user = User.first(email: params[:email])
+    if @user.update(password: params[:new_password],
+      password_confirmation: params[:new_password_confirmation])
+      session[:user_id] = @user.id
+      flash[:notice] = "Your password has been successfully changed"
+      # create a flash message to say successful
+      redirect to('/')
+    else
+      flash.now[:errors] = @user.errors.full_messages
+      erb :"users/reset_password"
+    end
   end
 
   post '/users' do
