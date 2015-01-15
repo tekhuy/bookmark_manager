@@ -59,7 +59,7 @@ class BookmarkManager < Sinatra::Base
 
   get '/users/reset_password/:token' do
     token = params[:token]
-    user = User.first(:password_token => token)
+    user = User.first(password_token: token)
     if (Time.now - (60 * 60)) > user.password_token_timestamp
       flash.now[:errors] = ["Sorry that token has expired, please request a new one"]
       erb :"users/forgot_password"   
@@ -70,15 +70,23 @@ class BookmarkManager < Sinatra::Base
 
   post '/users/reset_password' do
     #need to validate email wth token
-    @user = User.first(email: params[:email])
-    if @user.update(password: params[:new_password],
-      password_confirmation: params[:new_password_confirmation])
-      session[:user_id] = @user.id
-      flash[:notice] = "Your password has been successfully changed"
-      redirect to('/')
+    puts User.first(email: params[:email])
+    puts User.first(password_token: params[:token])
+    puts params[:token]
+    if User.first(email: params[:email]) == User.first(password_token: params[:token])
+      @user = User.first(email: params[:email])
+      if @user.update(password: params[:new_password],
+        password_confirmation: params[:new_password_confirmation])
+        session[:user_id] = @user.id
+        flash[:notice] = "Your password has been successfully changed"
+        redirect to('/')
+      else
+        flash.now[:errors] = @user.errors.full_messages
+        erb :"users/reset_password"
+      end
     else
-      flash.now[:errors] = @user.errors.full_messages
-      erb :"users/reset_password"
+      flash[:notice] = "You have used an incorrect email address" 
+      redirect to("/users/reset_password/#{:token}")
     end
   end
 
