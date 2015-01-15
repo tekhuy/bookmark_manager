@@ -1,0 +1,17 @@
+<header>
+  <section id="logo">Bookmark Manager</section>
+  <section id="user-links">
+    <% if current_user %>  
+      <span id="welcome-message">
+        Welcome <%= current_user.email %>
+      </span>
+      <form id="sign-out" action="/sessions" method="post">
+        <input type="hidden" name="_method" value="delete">
+        <input type="submit" value="Sign out">
+      </form>
+    <% else %>
+      <a href='/users/new' id='sign-up' class='button'>Sign up</a>
+      <a href='/sessions/new' id='sign-in' class='button'>Sign in</a>      
+    <% end %>
+  </section>
+</header>
