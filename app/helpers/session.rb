@@ -17,4 +17,12 @@ module SessionHelpers
     click_button "Sign up"
   end
 
+  def reset_password(email = 'alice@example.com')
+    sign_up
+    visit '/users/forgot_password'
+    fill_in :email, with: 'alice@example.com'
+    click_button "Reset password"
+    expect(User.first.password_token).not_to be(nil)
+  end
+
 end
