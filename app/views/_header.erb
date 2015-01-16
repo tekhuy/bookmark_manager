@@ -3,7 +3,7 @@
   <section id="user-links">
     <% if current_user %>  
       <span id="welcome-message">
-        Welcome <%= current_user.email %>
+        Welcome, <%= current_user.email %>
       </span>
       <form id="sign-out" action="/sessions" method="post">
         <input type="hidden" name="_method" value="delete">
